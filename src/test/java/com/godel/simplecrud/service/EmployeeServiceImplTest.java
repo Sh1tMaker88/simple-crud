@@ -94,18 +94,6 @@ class EmployeeServiceImplTest {
     }
 
     @Test
-    void deleteEmployeeTest() {
-        //given
-        Employee employee = new Employee();
-
-        //when
-        employeeService.deleteEmployee(employee);
-
-        //then
-        verify(employeeDao).delete(any());
-    }
-
-    @Test
     void deleteEmployeeByIdTest() {
         //given
         Employee employee = new Employee();

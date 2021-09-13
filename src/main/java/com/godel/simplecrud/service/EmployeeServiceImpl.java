@@ -53,12 +53,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public void deleteEmployee(Employee employee) {
-        employeeJDBCDao.delete(employee);
-        log.info("Deleted employee with ID:{}", employee.getEmployeeId());
-    }
-
-    @Override
     public void deleteEmployeeById(Long id) {
         Optional<Employee> employeeOptional = employeeJDBCDao.findById(id);
         if (employeeOptional.isEmpty()) {

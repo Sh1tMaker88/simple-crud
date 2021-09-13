@@ -15,7 +15,5 @@ public interface EmployeeDao {
 
     Long update(Employee employee);
 
-    int delete(Employee employee);
-
     int deleteById(Long Id);
 }

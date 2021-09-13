@@ -3,8 +3,12 @@ package com.godel.simplecrud.dao;
 import com.godel.simplecrud.model.Employee;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.lang.reflect.Type;
+import java.sql.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,8 +17,10 @@ import java.util.Optional;
 @Repository
 public class EmployeeJDBCDao implements EmployeeDao {
 
-//    private final static String CREATE_SQL = "INSERT INTO employee (first_name, last_name, department_id, " +
-//            "job_title, gender, date_of_birth) VALUES (?, ?, ?, ?, ?, ?)";
+    private final static String CREATE_SQL = "INSERT INTO employee (first_name, last_name, department_id, " +
+            "job_title, gender, date_of_birth) VALUES (?, ?, ?, ?, ?, ?)";
+    private final static String UPDATE_SQL = "UPDATE employee SET first_name = ?, last_name = ?, department_id = ?, " +
+            "job_title = ?, gender = ?, date_of_birth = ? WHERE employee_id = ?";
     private final static String GET_ALL_SQL = "SELECT * FROM employee";
     private final static String GET_BY_ID_SQL = "SELECT * FROM employee WHERE employee_id=?";
     private final static String DELETE_BY_ID_SQL = "DELETE FROM employee WHERE employee_id=?";
@@ -32,48 +38,32 @@ public class EmployeeJDBCDao implements EmployeeDao {
 
     @Override
     public Optional<Employee> findById(Long id) {
-        return Optional.ofNullable(jdbcTemplate.queryForObject(GET_BY_ID_SQL, new EmployeeRowMapper()));
+        return Optional.ofNullable(jdbcTemplate.queryForObject(GET_BY_ID_SQL, new EmployeeRowMapper(), id));
     }
 
     @Override
     public Long create(Employee employee) {
-        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
-        simpleJdbcInsert.withTableName("employee").usingGeneratedKeyColumns("employee_id");
-        Map<String, Object> parameters = new HashMap<>();
-        createInsertParameters(employee, parameters);
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement statement = connection.prepareStatement(CREATE_SQL, Statement.RETURN_GENERATED_KEYS);
+            setObjectsForCreateUpdateStatements(employee, statement);
+            return statement;
+        }, keyHolder);
 
-        Number id = simpleJdbcInsert.executeAndReturnKey(parameters);
-
-//        KeyHolder keyHolder = new GeneratedKeyHolder();
-//        jdbcTemplate.update(CREATE_SQL,
-//                employee.getFirstName(),
-//                employee.getLastName(),
-//                employee.getDepartmentId(),
-//                employee.getJobTitle(),
-//                employee.getGender(),
-//                employee.getDateOfBirth());
-//        keyHolder.getKey().longValue();
-        return Long.parseLong(String.valueOf(id));
+        return Long.parseLong(String.valueOf(keyHolder.getKeys().get("employee_id")));
     }
-
-
 
     @Override
     public Long update(Employee employee) {
-        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
-        simpleJdbcInsert.withTableName("employee");
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("employee_id", employee.getEmployeeId());
-        createInsertParameters(employee, parameters);
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement statement = connection.prepareStatement(UPDATE_SQL, Statement.RETURN_GENERATED_KEYS);
+            setObjectsForCreateUpdateStatements(employee, statement);
+            statement.setLong(7, employee.getEmployeeId());
+            return statement;
+        }, keyHolder);
 
-        simpleJdbcInsert.execute(parameters);
-
-        return employee.getEmployeeId();
-    }
-
-    @Override
-    public int delete(Employee employee) {
-        return jdbcTemplate.update(DELETE_BY_ID_SQL, employee.getEmployeeId());
+        return Long.parseLong(String.valueOf(keyHolder.getKeys().get("employee_id")));
     }
 
     @Override
@@ -81,12 +71,12 @@ public class EmployeeJDBCDao implements EmployeeDao {
         return jdbcTemplate.update(DELETE_BY_ID_SQL, id);
     }
 
-    private void createInsertParameters(Employee employee, Map<String, Object> parameters) {
-        parameters.put("first_name", employee.getFirstName());
-        parameters.put("last_name", employee.getLastName());
-        parameters.put("department_id", employee.getDepartmentId());
-        parameters.put("job_title", employee.getJobTitle());
-        parameters.put("gender", employee.getGender());
-        parameters.put("date_of_birth", employee.getDateOfBirth());
+    private void setObjectsForCreateUpdateStatements(Employee employee, PreparedStatement statement) throws SQLException {
+        statement.setString(1, employee.getFirstName());
+        statement.setString(2, employee.getLastName());
+        statement.setLong(3, employee.getDepartmentId());
+        statement.setString(4, employee.getJobTitle());
+        statement.setObject(5, employee.getGender().toString(), Types.OTHER);
+        statement.setDate(6, Date.valueOf(employee.getDateOfBirth()));
     }
 }
