@@ -16,4 +16,6 @@ public interface EmployeeDao {
     Long update(Employee employee);
 
     int deleteById(Long Id);
+
+    Integer exist(Long id);
 }

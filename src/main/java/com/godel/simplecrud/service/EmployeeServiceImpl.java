@@ -45,9 +45,15 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Employee updateEmployee(Employee employee) {
-        Long employeeId = employeeJDBCDao.update(employee);
-        log.info("Updated employee with ID:{}", employeeId);
+    public Employee updateOrCreateEmployee(Employee employee) {
+        Long employeeId;
+        if (employeeJDBCDao.exist(employee.getEmployeeId()) > 0) {
+            employeeId = employeeJDBCDao.update(employee);
+            log.info("Updated employee with ID:{}", employeeId);
+        } else {
+            employeeId = employeeJDBCDao.create(employee);
+            log.info("Create employee with ID:{}", employeeId);
+        }
 
         return employeeJDBCDao.findById(employeeId).get();
     }

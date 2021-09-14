@@ -112,4 +112,39 @@ class EmployeeServiceImplTest {
         when(employeeDao.findById(anyLong())).thenReturn(Optional.empty());
         assertThrows(RuntimeException.class, () -> employeeService.deleteEmployeeById(anyLong()));
     }
+
+    @Test
+    void updateOrCreateEmployee_UpdateCall() {
+        //given
+        Employee employee = new Employee();
+        employee.setEmployeeId(2L);
+        when(employeeDao.exist(anyLong())).thenReturn(1);
+        when(employeeDao.update(any(Employee.class))).thenReturn(2L);
+        when(employeeDao.findById(anyLong())).thenReturn(Optional.of(employee));
+
+        //when
+        Employee updatedEmployee = employeeService.updateOrCreateEmployee(employee);
+
+        assertEquals(2L, updatedEmployee.getEmployeeId());
+        verify(employeeDao).exist(anyLong());
+        verify(employeeDao).update(any(Employee.class));
+    }
+
+    @Test
+    void updateOrCreateEmployee_CreateCall() {
+        //given
+        Employee employee = new Employee();
+        employee.setEmployeeId(1L);
+        when(employeeDao.exist(anyLong())).thenReturn(0);
+        when(employeeDao.create(any(Employee.class))).thenReturn(3L);
+        when(employeeDao.findById(anyLong())).thenReturn(Optional.of(employee));
+
+        //when
+        Employee createdEmployee = employeeService.updateOrCreateEmployee(employee);
+
+        //then
+        assertEquals(1L, createdEmployee.getEmployeeId());
+        verify(employeeDao).exist(anyLong());
+        verify(employeeDao).create(any(Employee.class));
+    }
 }

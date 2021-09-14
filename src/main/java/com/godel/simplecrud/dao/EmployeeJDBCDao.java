@@ -24,6 +24,7 @@ public class EmployeeJDBCDao implements EmployeeDao {
     private final static String GET_ALL_SQL = "SELECT * FROM employee";
     private final static String GET_BY_ID_SQL = "SELECT * FROM employee WHERE employee_id=?";
     private final static String DELETE_BY_ID_SQL = "DELETE FROM employee WHERE employee_id=?";
+    private final static String EXISTS_SQL = "SELECT COUNT(*) FROM employee WHERE employee_id = ?";
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -69,6 +70,11 @@ public class EmployeeJDBCDao implements EmployeeDao {
     @Override
     public int deleteById(Long id) {
         return jdbcTemplate.update(DELETE_BY_ID_SQL, id);
+    }
+
+    @Override
+    public Integer exist(Long id) {
+        return jdbcTemplate.queryForObject(EXISTS_SQL, Integer.class, id);
     }
 
     private void setObjectsForCreateUpdateStatements(Employee employee, PreparedStatement statement) throws SQLException {

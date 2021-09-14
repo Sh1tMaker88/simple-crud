@@ -5,6 +5,7 @@ import com.godel.simplecrud.service.EmployeeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class EmployeeController {
                                                    @RequestBody Employee employee) {
         employee.setEmployeeId(id);
 
-        return ResponseEntity.ok(employeeService.updateEmployee(employee));
+        return ResponseEntity.ok(employeeService.updateOrCreateEmployee(employee));
     }
 
     @DeleteMapping("/{id}")
