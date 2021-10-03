@@ -1,6 +1,7 @@
 package com.godel.simplecrud.service;
 
 import com.godel.simplecrud.dao.jpa.EmployeeJPADao;
+import com.godel.simplecrud.exceptions.ResourceNotFoundException;
 import com.godel.simplecrud.model.Employee;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
@@ -30,7 +31,7 @@ public class EmployeeJPAServiceImpl implements EmployeeService {
         Optional<Employee> employeeOptional = employeeJPADao.findById(id);
         if (employeeOptional.isEmpty()) {
             log.error("No such employee with ID={}", id);
-            throw new RuntimeException("No such employee with ID=" + id);
+            throw new ResourceNotFoundException("No such employee with ID=" + id);
         }
         return employeeOptional.get();
     }
@@ -52,7 +53,7 @@ public class EmployeeJPAServiceImpl implements EmployeeService {
         Optional<Employee> employeeOptional = employeeJPADao.findById(id);
         if (employeeOptional.isEmpty()) {
             log.error("No such employee with ID={}", id);
-            throw new RuntimeException("No such employee with ID=" + id);
+            throw new ResourceNotFoundException("No such employee with ID=" + id);
         }
         employeeJPADao.delete(employeeOptional.get());
         log.info("Delete employee with ID={}", id);
