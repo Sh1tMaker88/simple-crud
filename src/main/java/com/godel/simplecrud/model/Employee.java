@@ -4,10 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import javax.swing.tree.RowMapper;
-import javax.swing.tree.TreePath;
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Getter
@@ -41,4 +41,6 @@ public class Employee {
 
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
+
+
 }

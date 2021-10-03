@@ -1,8 +1,9 @@
 package com.godel.simplecrud.service;
 
-import com.godel.simplecrud.dao.EmployeeJDBCDao;
+import com.godel.simplecrud.dao.jdbc.EmployeeJDBCDao;
 import com.godel.simplecrud.model.Employee;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,6 +12,7 @@ import java.util.Optional;
 
 @Slf4j
 @Service
+@Profile("JDBC")
 public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeJDBCDao employeeJDBCDao;

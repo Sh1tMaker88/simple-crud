@@ -1,4 +1,4 @@
-package com.godel.simplecrud.dao;
+package com.godel.simplecrud.dao.jdbc;
 
 import com.godel.simplecrud.model.Employee;
 

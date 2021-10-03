@@ -1,7 +1,6 @@
 package com.godel.simplecrud.service;
 
-import com.godel.simplecrud.dao.EmployeeDao;
-import com.godel.simplecrud.dao.EmployeeJDBCDao;
+import com.godel.simplecrud.dao.jdbc.EmployeeJDBCDao;
 import com.godel.simplecrud.model.Employee;
 import com.godel.simplecrud.model.Gender;
 import org.junit.jupiter.api.BeforeEach;

@@ -3,7 +3,6 @@ package com.godel.simplecrud.service;
 import com.godel.simplecrud.model.Employee;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface EmployeeService {
 
@@ -15,5 +14,5 @@ public interface EmployeeService {
 
     Employee updateOrCreateEmployee(Employee employee);
 
-    void deleteEmployeeById(Long Id);
+    void deleteEmployeeById(Long id);
 }
