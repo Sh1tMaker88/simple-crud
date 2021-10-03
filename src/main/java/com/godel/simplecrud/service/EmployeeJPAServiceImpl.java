@@ -23,14 +23,16 @@ public class EmployeeJPAServiceImpl implements EmployeeService {
 
     @Override
     public List<Employee> findAllEmployees() {
-        return employeeJPADao.findAll();
+        List<Employee> employeeList = employeeJPADao.findAll();
+        log.info("findAllEmployees - found {} employees", employeeList.size());
+        return employeeList;
     }
 
     @Override
     public Employee findEmployeeById(Long id) {
         Optional<Employee> employeeOptional = employeeJPADao.findById(id);
         if (employeeOptional.isEmpty()) {
-            log.error("No such employee with ID={}", id);
+            log.error("findEmployeeById - no such employee with ID={}", id);
             throw new ResourceNotFoundException("No such employee with ID=" + id);
         }
         return employeeOptional.get();
@@ -38,13 +40,13 @@ public class EmployeeJPAServiceImpl implements EmployeeService {
 
     @Override
     public Employee createEmployee(Employee employee) {
-        log.info("Create employee " + employee.getFirstName() + " " + employee.getLastName());
+        log.info("createEmployee - create employee " + employee.getFirstName() + " " + employee.getLastName());
         return employeeJPADao.save(employee);
     }
 
     @Override
     public Employee updateOrCreateEmployee(Employee employee) {
-        log.info("Update employee with ID=" + employee.getEmployeeId());
+        log.info("updateOrCreateEmployee - update employee with ID=" + employee.getEmployeeId());
         return employeeJPADao.save(employee);
     }
 
@@ -52,10 +54,10 @@ public class EmployeeJPAServiceImpl implements EmployeeService {
     public void deleteEmployeeById(Long id) {
         Optional<Employee> employeeOptional = employeeJPADao.findById(id);
         if (employeeOptional.isEmpty()) {
-            log.error("No such employee with ID={}", id);
+            log.error("deleteEmployeeById - no such employee with ID={}", id);
             throw new ResourceNotFoundException("No such employee with ID=" + id);
         }
         employeeJPADao.delete(employeeOptional.get());
-        log.info("Delete employee with ID={}", id);
+        log.info("deleteEmployeeById - delete employee with ID={}", id);
     }
 }
