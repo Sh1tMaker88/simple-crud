@@ -1,5 +1,6 @@
 package com.godel.simplecrud.model;
 
+import com.godel.simplecrud.model.validation.AgeValidation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -49,6 +50,7 @@ public class Employee {
 
     @Column(name = "date_of_birth")
     @Schema(required = true)
+    @AgeValidation(message = "Age must be more than 18 years old")
     private LocalDate dateOfBirth;
 
 }

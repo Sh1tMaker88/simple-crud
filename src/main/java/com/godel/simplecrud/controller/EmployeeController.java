@@ -7,10 +7,10 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -39,14 +39,15 @@ public class EmployeeController {
 
     @PostMapping
     @Operation(summary = "Create new employee", description = "Let create new employee with given parameters")
-    public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee) {
+    public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee, BindingResult bindingResult) {
+
         return ResponseEntity.status(HttpStatus.CREATED).body(employeeService.createEmployee(employee));
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Create or update employee", description = "Let create new employee with given parameters or update if he already exists")
     public ResponseEntity<Employee> updateEmployee(@PathVariable Long id,
-                                                   @RequestBody Employee employee) {
+                                                   @RequestBody Employee employee, BindingResult bindingResult) {
         employee.setEmployeeId(id);
 
         return ResponseEntity.ok(employeeService.updateOrCreateEmployee(employee));
