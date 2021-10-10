@@ -1,46 +1,63 @@
 package com.godel.simplecrud.exceptions;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver;
 
 import javax.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 @RestControllerAdvice
-public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
+@Slf4j
+public class ControllerExceptionHandler {
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ErrorMessage> validateErrorHandler(ConstraintViolationException e, WebRequest request) {
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ErrorMessage validateErrorHandler(ConstraintViolationException exception, WebRequest request) {
+        LocalDateTime time = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+        int status = HttpStatus.BAD_REQUEST.value();
+        String description = request.getDescription(false);
+
         StringBuilder messages = new StringBuilder();
-        e.getConstraintViolations()
+        exception.getConstraintViolations()
                 .forEach(el -> messages.append(el.getMessage()).append("\n"));
 
-        String stringMessage = messages.replace(messages.length() - 2, messages.length(), "").toString();
+        String stringMessage = messages.replace(messages.length() - 1, messages.length(), "").toString();
 
-        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(),
-                LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), stringMessage, request.getDescription(false));
+        log.error("Happened: {}, HTTP status: {}, message: {}, path: {}", time, status, stringMessage, description);
 
-        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+        return new ErrorMessage(status, time, stringMessage, description);
     }
 
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ErrorMessage> notFoundException(ResourceNotFoundException exception, WebRequest request) {
-        ErrorMessage message = new ErrorMessage(HttpStatus.NOT_FOUND.value(),
-                LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), exception.getMessage(), request.getDescription(false));
-        return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+    //todo annotations
+    @ExceptionHandler(EmployeeServiceNotFoundException.class)
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    public ErrorMessage notFoundException(EmployeeServiceNotFoundException exception, WebRequest request) {
+        LocalDateTime time = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+        int status = HttpStatus.NOT_FOUND.value();
+        String description = request.getDescription(false);
+
+        log.error("Happened: {}, HTTP status: {}, message: {}, path: {}", time, status, exception.getMessage(), description);
+
+        return new ErrorMessage(status, time, exception.getMessage(), description);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorMessage> globalExceptionHandler(Exception exception, WebRequest request) {
-        ErrorMessage message = new ErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), exception.getMessage(), request.getDescription(false));
-        return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorMessage globalExceptionHandler(Exception exception, WebRequest request) {
+        LocalDateTime time = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+        int status = HttpStatus.INTERNAL_SERVER_ERROR.value();
+        String description = request.getDescription(false);
 
+        log.error("Happened: {}, HTTP status: {}, message: {}, path: {}", time, status, exception.getMessage(), description);
+
+        return new ErrorMessage(status, time, exception.getMessage(), description);
+    }
 
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration  scan="true" scanPeriod="30 seconds" debug="true">
-    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
-    <property name="LOG_HOME" value="logs"/>+
+<configuration>
+<!--    <include resource="org/springframework/boot/logging/logback/defaults.xml" />-->
+    <property name="LOG_HOME" value="logs"/>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -13,51 +13,49 @@
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_HOME}/myLog-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>${LOG_HOME}/myLog_%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy
                     class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
             </timeBasedFileNamingAndTriggeringPolicy>
-            <maxFileSize>100MB</maxFileSize>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <Pattern>
+                %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36}.%M - %msg%n
+            </Pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE-WARN" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/myLogError-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxFileSize>10MB</maxFileSize>
             <maxHistory>31</maxHistory>
             <totalSizeCap>1GB</totalSizeCap>
         </rollingPolicy>
         <encoder>
             <Pattern>
-                %d{dd-MM-yyyy HH:mm:ss.SSS} [%thread] %-5level %logger{36}.%M - %msg%n
+                %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %class{50}.%M:%L - %msg%n
             </Pattern>
         </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>WARN</level>
+        </filter>
     </appender>
 
-        <appender name="FILE-ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
-            <!--        <file>myLog.log</file>-->
-            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-                <fileNamePattern>${LOG_HOME}/myLogError-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-                <timeBasedFileNamingAndTriggeringPolicy
-                        class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                </timeBasedFileNamingAndTriggeringPolicy>
-                <maxFileSize>100MB</maxFileSize>
-                <maxHistory>31</maxHistory>
-                <totalSizeCap>1GB</totalSizeCap>
-            </rollingPolicy>
-            <encoder>
-                <Pattern>
-                    %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %class{50}.%M:%L - %msg%n
-                </Pattern>
-            </encoder>
-            <filter class="ch.qos.logback.classic.filter.LevelFilter">
-                <level>Error</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
-            </filter>
-        </appender>
-
-        <logger name="com.godel.simplecrud" level="Error" additivity="false">
-            <appender-ref ref="FILE-ERROR" />
-        </logger>
+<!--    <logger name="com.godel.simplecrud.service" level="WARN" additivity="false">-->
+<!--        <appender-ref ref="FILE-WARN" />-->
+<!--    </logger>-->
 
     <root level="INFO">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="FILE"/>
+        <appender-ref ref="FILE-WARN"/>
     </root>
 
 </configuration>

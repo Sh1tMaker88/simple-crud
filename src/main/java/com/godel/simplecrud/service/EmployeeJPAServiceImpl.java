@@ -1,7 +1,7 @@
 package com.godel.simplecrud.service;
 
 import com.godel.simplecrud.dao.jpa.EmployeeJPADao;
-import com.godel.simplecrud.exceptions.ResourceNotFoundException;
+import com.godel.simplecrud.exceptions.EmployeeServiceNotFoundException;
 import com.godel.simplecrud.model.Employee;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
@@ -33,9 +33,21 @@ public class EmployeeJPAServiceImpl implements EmployeeService {
         Optional<Employee> employeeOptional = employeeJPADao.findById(id);
         if (employeeOptional.isEmpty()) {
             log.error("findEmployeeById - no such employee with ID={}", id);
-            throw new ResourceNotFoundException("No such employee with ID=" + id);
+            throw new EmployeeServiceNotFoundException("No such employee with ID=" + id);
         }
         return employeeOptional.get();
+    }
+
+    @Override
+    public Employee findByFirstNameAndLastName(String firstName, String lastName) {
+        Optional<Employee> optionalEmployee = employeeJPADao.findByFirstNameAndLastName(firstName, lastName);
+        if (optionalEmployee.isEmpty()) {
+            log.error("No such employee found");
+            throw new EmployeeServiceNotFoundException("No such employee with first name=" + firstName +
+                    " and last name=" + lastName);
+        }
+
+        return optionalEmployee.get();
     }
 
     @Override
@@ -55,7 +67,7 @@ public class EmployeeJPAServiceImpl implements EmployeeService {
         Optional<Employee> employeeOptional = employeeJPADao.findById(id);
         if (employeeOptional.isEmpty()) {
             log.error("deleteEmployeeById - no such employee with ID={}", id);
-            throw new ResourceNotFoundException("No such employee with ID=" + id);
+            throw new EmployeeServiceNotFoundException("No such employee with ID=" + id);
         }
         employeeJPADao.delete(employeeOptional.get());
         log.info("deleteEmployeeById - delete employee with ID={}", id);
