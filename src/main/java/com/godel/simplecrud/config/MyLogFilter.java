@@ -19,7 +19,7 @@ public class MyLogFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         LocalDateTime time = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
-        log.info("Request: {}, method: {}, request URI: {}",
+        log.info("Request: {} [method:{}] URI: {}",
                 time, request.getMethod(), request.getRequestURI());
 
         filterChain.doFilter(request, response);

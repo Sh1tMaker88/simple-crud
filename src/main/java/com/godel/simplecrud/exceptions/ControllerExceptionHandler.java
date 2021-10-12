@@ -17,6 +17,18 @@ import java.time.temporal.ChronoUnit;
 @Slf4j
 public class ControllerExceptionHandler {
 
+    @ExceptionHandler(EmployeeControllerIllegalArgumentException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ErrorMessage handleInputParameters(EmployeeControllerIllegalArgumentException exception, WebRequest request) {
+        LocalDateTime time = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+        int status = HttpStatus.BAD_REQUEST.value();
+        String description = request.getDescription(false);
+
+        log.error("Happened: {}, HTTP status: {}, message: {}, path: {}", time, status, exception.getMessage(), description);
+
+        return new ErrorMessage(status, time, exception.getMessage(), description);
+    }
+
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ErrorMessage validateErrorHandler(ConstraintViolationException exception, WebRequest request) {
@@ -35,7 +47,6 @@ public class ControllerExceptionHandler {
         return new ErrorMessage(status, time, stringMessage, description);
     }
 
-    //todo annotations
     @ExceptionHandler(EmployeeServiceNotFoundException.class)
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     public ErrorMessage notFoundException(EmployeeServiceNotFoundException exception, WebRequest request) {

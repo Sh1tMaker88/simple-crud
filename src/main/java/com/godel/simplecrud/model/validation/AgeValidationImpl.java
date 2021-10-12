@@ -13,13 +13,7 @@ public class AgeValidationImpl implements ConstraintValidator<AgeValidation, Loc
 
     @Override
     public boolean isValid(LocalDate value, ConstraintValidatorContext context) {
-        LocalDate thisDate = LocalDate.now();
-        if (thisDate.getYear() - value.getYear() > 18) {
-            return true;
-        } else if (thisDate.getYear() - value.getYear() == 18) {
-            return thisDate.compareTo(value) > 0;
-        } else {
-            return false;
-        }
+        LocalDate thisDate = LocalDate.now().minusYears(18);
+        return thisDate.compareTo(value) >= 0;
     }
 }

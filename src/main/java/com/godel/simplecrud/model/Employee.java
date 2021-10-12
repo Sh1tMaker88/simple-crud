@@ -2,10 +2,7 @@ package com.godel.simplecrud.model;
 
 import com.godel.simplecrud.model.validation.AgeValidation;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -16,12 +13,14 @@ import java.time.LocalDate;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 @Table(name = "employee")
 public class Employee {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "employee_id")
+    @Positive(message = "Employee ID cannot be null")
     private Long employeeId;
 
     @Column(name = "first_name")

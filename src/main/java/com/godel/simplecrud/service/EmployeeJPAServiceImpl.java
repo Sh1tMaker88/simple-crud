@@ -24,52 +24,69 @@ public class EmployeeJPAServiceImpl implements EmployeeService {
     @Override
     public List<Employee> findAllEmployees() {
         List<Employee> employeeList = employeeJPADao.findAll();
-        log.info("findAllEmployees - found {} employees", employeeList.size());
+        log.info("OUT: findAllEmployees - found {} employees", employeeList.size());
         return employeeList;
     }
 
     @Override
     public Employee findEmployeeById(Long id) {
+        log.info("IN: findEmployeeById - search employee with ID={}", id);
         Optional<Employee> employeeOptional = employeeJPADao.findById(id);
+
         if (employeeOptional.isEmpty()) {
             log.error("findEmployeeById - no such employee with ID={}", id);
             throw new EmployeeServiceNotFoundException("No such employee with ID=" + id);
         }
-        return employeeOptional.get();
+
+        Employee employee = employeeOptional.get();
+        log.info("OUT: findEmployeeById - found employee={}", employee);
+        return employee;
     }
 
     @Override
     public Employee findByFirstNameAndLastName(String firstName, String lastName) {
+        log.info("IN: findByFirstNameAndLastName - search employee with first name={} and last name={}", firstName, lastName);
         Optional<Employee> optionalEmployee = employeeJPADao.findByFirstNameAndLastName(firstName, lastName);
+
         if (optionalEmployee.isEmpty()) {
             log.error("No such employee found");
             throw new EmployeeServiceNotFoundException("No such employee with first name=" + firstName +
                     " and last name=" + lastName);
         }
 
-        return optionalEmployee.get();
+        Employee employee = optionalEmployee.get();
+        log.info("OUT: findByFirstNameAndLastName - found employee={}", employee);
+        return employee;
     }
 
     @Override
     public Employee createEmployee(Employee employee) {
-        log.info("createEmployee - create employee " + employee.getFirstName() + " " + employee.getLastName());
-        return employeeJPADao.save(employee);
+        log.info("IN: createEmployee - creating {}", employee);
+        Employee savedEmployee = employeeJPADao.save(employee);
+        log.info("OUT: createEmployee - {}", savedEmployee);
+        return savedEmployee;
     }
 
     @Override
     public Employee updateOrCreateEmployee(Employee employee) {
-        log.info("updateOrCreateEmployee - update employee with ID=" + employee.getEmployeeId());
+        log.info("IN: updateOrCreateEmployee - updating {}", employee);
+        Employee savedEmployee = employeeJPADao.save(employee);
+        log.info("OUT: updateOrCreateEmployee - successfully updated {}", savedEmployee);
         return employeeJPADao.save(employee);
     }
 
     @Override
     public void deleteEmployeeById(Long id) {
+        log.info("IN: deleteEmployeeById - attempt to delete employee with ID={}", id);
         Optional<Employee> employeeOptional = employeeJPADao.findById(id);
+
         if (employeeOptional.isEmpty()) {
             log.error("deleteEmployeeById - no such employee with ID={}", id);
             throw new EmployeeServiceNotFoundException("No such employee with ID=" + id);
         }
-        employeeJPADao.delete(employeeOptional.get());
-        log.info("deleteEmployeeById - delete employee with ID={}", id);
+
+        Employee employee = employeeOptional.get();
+        employeeJPADao.delete(employee);
+        log.info("OUT: deleteEmployeeById - successfully deleted {}", employee);
     }
 }

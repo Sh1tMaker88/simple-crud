@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SwaggerConfig {
 
+    //todo actualize documentation
     @Bean
     public OpenAPI myOpenApi() {
         Info info = new Info()
