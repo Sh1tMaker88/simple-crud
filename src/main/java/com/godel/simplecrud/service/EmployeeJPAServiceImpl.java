@@ -44,19 +44,19 @@ public class EmployeeJPAServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Employee findByFirstNameAndLastName(String firstName, String lastName) {
+    public List<Employee> findByFirstNameAndLastName(String firstName, String lastName) {
         log.info("IN: findByFirstNameAndLastName - search employee with first name={} and last name={}", firstName, lastName);
-        Optional<Employee> optionalEmployee = employeeJPADao.findByFirstNameAndLastName(firstName, lastName);
+        List<Employee> employeeList =
+                employeeJPADao.findByFirstNameIgnoreCaseLikeAndLastNameIgnoreCaseLike(firstName, lastName);
 
-        if (optionalEmployee.isEmpty()) {
-            log.error("No such employee found");
-            throw new EmployeeServiceNotFoundException("No such employee with first name=" + firstName +
-                    " and last name=" + lastName);
-        }
+//        if (optionalEmployee.isEmpty()) {
+//            log.error("No such employee found");
+//            throw new EmployeeServiceNotFoundException("No such employee with first name=" + firstName +
+//                    " and last name=" + lastName);
+//        }
 
-        Employee employee = optionalEmployee.get();
-        log.info("OUT: findByFirstNameAndLastName - found employee={}", employee);
-        return employee;
+        log.info("OUT: findByFirstNameAndLastName - found {} employee", employeeList.size());
+        return employeeList;
     }
 
     @Override

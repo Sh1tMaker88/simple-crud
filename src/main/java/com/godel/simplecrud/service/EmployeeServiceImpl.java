@@ -39,7 +39,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Employee findByFirstNameAndLastName(String firstName, String lastName) {
+    public List<Employee> findByFirstNameAndLastName(String firstName, String lastName) {
         return null;
     }
 

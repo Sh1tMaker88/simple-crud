@@ -11,7 +11,7 @@ public interface EmployeeService {
 
     Employee findEmployeeById(Long id);
 
-    Employee findByFirstNameAndLastName(String firstName, String lastName);
+    List<Employee> findByFirstNameAndLastName(String firstName, String lastName);
 
     Employee createEmployee(Employee employee);
 
