@@ -13,11 +13,15 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController;
+import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.Pattern;
 import java.util.List;
 
@@ -46,10 +50,16 @@ public class EmployeeController {
             @Pattern(regexp = "[A-Za-z.]*", message = "First name can contain letters only and '.'")
                     @RequestParam(required = false, defaultValue = "") String firstName,
             @Pattern(regexp = "[A-Za-z.]*", message = "Last name can contain letters only and '.'")
-                    @RequestParam(required = false, defaultValue = "") String lastName
+                    @RequestParam(required = false, defaultValue = "") String lastName,
+            HttpServletRequest request
     ) {
+        log.info("IN: showAllEmployees - Request: [method:{}] URI: {}, params:{}",
+                request.getMethod(), request.getRequestURI(), request.getQueryString());
 
-        return employeeService.findByFirstNameAndLastName(firstName + "%", lastName + "%");
+        List<Employee> employeeList = employeeService.findByFirstNameAndLastName(firstName + "%", lastName + "%");
+
+        log.info("OUT: showAllEmployees - found {} employees", employeeList.size());
+        return employeeList;
     }
 
     @GetMapping("/{id}")
@@ -65,12 +75,14 @@ public class EmployeeController {
                     @Content(mediaType = "plain/text", schema = @Schema(implementation = ErrorMessage.class))
             })
     })
-    public Employee showEmployee(@PathVariable @Parameter(description = "Employee ID") Long id) {
-        if (id <= 0) {
-            throw new EmployeeControllerIllegalArgumentException("ID cannot be less or equal 0");
-        }
+    public Employee showEmployee(@PathVariable @Min(value = 1, message = "Employee ID cannot be less or equal 0") Long id,
+                                 HttpServletRequest request) {
+        log.info("IN: showEmployee - Request: [method:{}] URI: {}", request.getMethod(), request.getRequestURI());
 
-        return employeeService.findEmployeeById(id);
+        Employee employee = employeeService.findEmployeeById(id);
+
+        log.info("OUT: showEmployee - found {}", employee);
+        return employee;
     }
 
     @PostMapping
@@ -83,11 +95,13 @@ public class EmployeeController {
                     @Content(mediaType = "plain/text", schema = @Schema(implementation = ErrorMessage.class))
             })
     })
-    public Employee createEmployee(@Valid @RequestBody Employee employee, BindingResult bindingResult) {
-        if (bindingResult.hasFieldErrors()) {
-            throw new EmployeeControllerIllegalArgumentException("Validation failed");
-        }
-        return employeeService.createEmployee(employee);
+    public Employee createEmployee(@RequestBody Employee employee, HttpServletRequest request) {
+        log.info("IN: createEmployee - Request: [method:{}] URI: {}", request.getMethod(), request.getRequestURI());
+
+        Employee createdEmployee = employeeService.createEmployee(employee);
+
+        log.info("OUT: createEmployee - found {}", createdEmployee);
+        return createdEmployee;
     }
 
     @PutMapping("/{id}")
@@ -100,16 +114,15 @@ public class EmployeeController {
                     @Content(mediaType = "plain/text", schema = @Schema(implementation = ErrorMessage.class))
             })
     })
-    public Employee updateEmployee(@PathVariable Long id, @Valid @RequestBody Employee employee, BindingResult bindingResult) {
-        if (id <= 0) {
-            throw new EmployeeControllerIllegalArgumentException("ID cannot be less or equal 0");
-        }
-        if (bindingResult.hasFieldErrors()) {
-            throw new EmployeeControllerIllegalArgumentException("Validation failed");
-        }
-        employee.setEmployeeId(id);
+    public Employee updateEmployee(@PathVariable @Min(value = 1, message = "Employee ID cannot be less or equal 0") Long id,
+                                   @Valid @RequestBody Employee employee, HttpServletRequest request) {
+        log.info("IN: updateEmployee - Request: [method:{}] URI: {}", request.getMethod(), request.getRequestURI());
 
-        return employeeService.updateOrCreateEmployee(employee);
+        employee.setEmployeeId(id);
+        Employee updatedEmployee = employeeService.updateOrCreateEmployee(employee);
+
+        log.info("OUT: updateEmployee - found {}", updatedEmployee);
+        return updatedEmployee;
     }
 
     @DeleteMapping("/{id}")
@@ -125,11 +138,12 @@ public class EmployeeController {
                     @Content(mediaType = "plain/text", schema = @Schema(implementation = ErrorMessage.class))
             })
     })
-    public void deleteEmployee(@PathVariable @Parameter(description = "Employee ID") Long id) {
-        if (id <= 0) {
-            throw new EmployeeControllerIllegalArgumentException("ID cannot be less or equal 0");
-        }
+    public void deleteEmployee(@PathVariable @Min(value = 1, message = "Employee ID cannot be less or equal 0") Long id,
+                               HttpServletRequest request) {
+        log.info("IN: deleteEmployee - Request: [method:{}] URI: {}", request.getMethod(), request.getRequestURI());
 
         employeeService.deleteEmployeeById(id);
+
+        log.info("OUT deleteEmployee - success");
     }
 }

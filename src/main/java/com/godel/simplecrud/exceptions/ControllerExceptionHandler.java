@@ -2,13 +2,16 @@ package com.godel.simplecrud.exceptions;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -24,17 +27,18 @@ public class ControllerExceptionHandler {
         int status = HttpStatus.BAD_REQUEST.value();
         String description = request.getDescription(false);
 
-        log.error("Happened: {}, HTTP status: {}, message: {}, path: {}", time, status, exception.getMessage(), description);
+        log.error("HTTP status: {}, path: {}", status, description, exception);
 
         return new ErrorMessage(status, time, exception.getMessage(), description);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ErrorMessage validateErrorHandler(ConstraintViolationException exception, WebRequest request) {
+    public ErrorMessage validateErrorHandler(ConstraintViolationException exception, HttpServletRequest request) {
         LocalDateTime time = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
         int status = HttpStatus.BAD_REQUEST.value();
-        String description = request.getDescription(false);
+        String description = request.getQueryString() == null ? request.getRequestURI()
+                : request.getRequestURI() + ", params: " +  request.getQueryString();
 
         StringBuilder messages = new StringBuilder();
         exception.getConstraintViolations()
@@ -42,8 +46,26 @@ public class ControllerExceptionHandler {
 
         String stringMessage = messages.replace(messages.length() - 1, messages.length(), "").toString();
 
-        log.error("Happened: {}, HTTP status: {}, message: {}, path: {}", time, status, stringMessage, description);
+        log.error("HTTP status: {}, path: {}", status, description, exception);
 
+        return new ErrorMessage(status, time, stringMessage, description);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ErrorMessage validateRequestBody(MethodArgumentNotValidException exception, HttpServletRequest request) {
+        LocalDateTime time = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+        int status = HttpStatus.BAD_REQUEST.value();
+        String description = request.getQueryString() == null ? request.getRequestURI()
+                : request.getRequestURI() + ", params: " +  request.getQueryString();
+
+        StringBuilder messages = new StringBuilder();
+        exception.getFieldErrors()
+                .forEach(el -> messages.append(el.getDefaultMessage()).append("\n"));
+
+        String stringMessage = messages.replace(messages.length() - 1, messages.length(), "").toString();
+
+        log.error("HTTP status: {}, path: {}", status, description, exception);
         return new ErrorMessage(status, time, stringMessage, description);
     }
 
@@ -54,7 +76,7 @@ public class ControllerExceptionHandler {
         int status = HttpStatus.NOT_FOUND.value();
         String description = request.getDescription(false);
 
-        log.error("Happened: {}, HTTP status: {}, message: {}, path: {}", time, status, exception.getMessage(), description);
+        log.error("HTTP status: {}, path: {}", status, description, exception);
 
         return new ErrorMessage(status, time, exception.getMessage(), description);
     }
@@ -66,7 +88,7 @@ public class ControllerExceptionHandler {
         int status = HttpStatus.INTERNAL_SERVER_ERROR.value();
         String description = request.getDescription(false);
 
-        log.error("Happened: {}, HTTP status: {}, message: {}, path: {}", time, status, exception.getMessage(), description);
+        log.error("HTTP status: {}, path: {}", status, description, exception);
 
         return new ErrorMessage(status, time, exception.getMessage(), description);
     }

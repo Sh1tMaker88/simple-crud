@@ -20,22 +20,22 @@ public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "employee_id")
-    @Positive(message = "Employee ID cannot be null")
+    @Positive(message = "Employee ID cannot be less or equal 0")
     private Long employeeId;
 
     @Column(name = "first_name")
     @Schema(required = true, pattern = "[A-Z]\\D{2,}")
-    @Pattern(regexp =  "[A-Z]\\D{2,}", message = "First name must start with capital letter, have length 3+ letters and contains no numbers")
+    @Pattern(regexp =  "[A-Z]\\D{2,}", message = "First name must start with capital letter, have length 3+ and contains no numbers")
     private String firstName;
 
     @Column(name = "last_name")
     @Schema(required = true, pattern = "[A-Z]\\D{2,}")
-    @Pattern(regexp =  "[A-Z]\\D{2,}", message = "Last name must start with capital letter, have length 3+ letters and contains no numbers")
+    @Pattern(regexp =  "[A-Z]\\D{2,}", message = "Last name must start with capital letter, have length 3+ and contains no numbers")
     private String lastName;
 
     @Column(name = "department_id")
     @Schema(required = true)
-    @Positive(message = "Department ID cannot be null")
+    @Positive(message = "Department ID cannot be less or equal 0")
     private Long departmentId;
 
     @Column(name = "job_title")
