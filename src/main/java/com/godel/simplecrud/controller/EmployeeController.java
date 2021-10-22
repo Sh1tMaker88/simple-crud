@@ -1,11 +1,9 @@
 package com.godel.simplecrud.controller;
 
-import com.godel.simplecrud.exceptions.EmployeeControllerIllegalArgumentException;
 import com.godel.simplecrud.exceptions.ErrorMessage;
 import com.godel.simplecrud.model.Employee;
 import com.godel.simplecrud.service.EmployeeService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -13,9 +11,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController;
-import org.springframework.boot.web.servlet.error.ErrorController;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -95,7 +90,7 @@ public class EmployeeController {
                     @Content(mediaType = "plain/text", schema = @Schema(implementation = ErrorMessage.class))
             })
     })
-    public Employee createEmployee(@RequestBody Employee employee, HttpServletRequest request) {
+    public Employee createEmployee(@Valid @RequestBody Employee employee, HttpServletRequest request) {
         log.info("IN: createEmployee - Request: [method:{}] URI: {}", request.getMethod(), request.getRequestURI());
 
         Employee createdEmployee = employeeService.createEmployee(employee);
