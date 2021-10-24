@@ -41,7 +41,8 @@
 
     <changeSet id="1.2(Check constraint for date of birth)" author="ItMaker">
         <sql>
-            ALTER TABLE employee ADD CONSTRAINT chk_employee_date_of_birth CHECK((extract(year from age(date_of_birth))::int) > 18)
+            ALTER TABLE employee ADD CONSTRAINT chk_employee_date_of_birth
+            CHECK((extract(year from age(date_of_birth))::int) > 18)
         </sql>
     </changeSet>
 

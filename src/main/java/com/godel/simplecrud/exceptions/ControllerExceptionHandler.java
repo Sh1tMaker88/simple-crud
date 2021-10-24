@@ -20,7 +20,6 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ErrorMessage validateErrorHandler(ConstraintViolationException exception, HttpServletRequest request) {
-        LocalDateTime time = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
         int status = HttpStatus.BAD_REQUEST.value();
         String description = request.getQueryString() == null ? request.getRequestURI()
                 : request.getRequestURI() + ", params: " +  request.getQueryString();
@@ -28,18 +27,16 @@ public class ControllerExceptionHandler {
         StringBuilder messages = new StringBuilder();
         exception.getConstraintViolations()
                 .forEach(el -> messages.append(el.getMessage()).append("\n"));
-
         String stringMessage = messages.replace(messages.length() - 1, messages.length(), "").toString();
 
         log.error("HTTP status: {}, path: {}", status, description, exception);
 
-        return new ErrorMessage(status, time, stringMessage, description);
+        return new ErrorMessage(status, LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), stringMessage, description);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ErrorMessage validateRequestBody(MethodArgumentNotValidException exception, HttpServletRequest request) {
-        LocalDateTime time = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
         int status = HttpStatus.BAD_REQUEST.value();
         String description = request.getQueryString() == null ? request.getRequestURI()
                 : request.getRequestURI() + ", params: " +  request.getQueryString();
@@ -47,35 +44,32 @@ public class ControllerExceptionHandler {
         StringBuilder messages = new StringBuilder();
         exception.getFieldErrors()
                 .forEach(el -> messages.append(el.getDefaultMessage()).append("\n"));
-
         String stringMessage = messages.replace(messages.length() - 1, messages.length(), "").toString();
 
         log.error("HTTP status: {}, path: {}", status, description, exception);
-        return new ErrorMessage(status, time, stringMessage, description);
+        return new ErrorMessage(status, LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), stringMessage, description);
     }
 
     @ExceptionHandler(EmployeeServiceNotFoundException.class)
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     public ErrorMessage notFoundException(EmployeeServiceNotFoundException exception, WebRequest request) {
-        LocalDateTime time = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
         int status = HttpStatus.NOT_FOUND.value();
         String description = request.getDescription(false);
 
         log.error("HTTP status: {}, path: {}", status, description, exception);
 
-        return new ErrorMessage(status, time, exception.getMessage(), description);
+        return new ErrorMessage(status, LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), exception.getMessage(), description);
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorMessage globalExceptionHandler(Exception exception, WebRequest request) {
-        LocalDateTime time = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
         int status = HttpStatus.INTERNAL_SERVER_ERROR.value();
         String description = request.getDescription(false);
 
         log.error("HTTP status: {}, path: {}", status, description, exception);
 
-        return new ErrorMessage(status, time, exception.getMessage(), description);
+        return new ErrorMessage(status, LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), exception.getMessage(), description);
     }
 
 }
