@@ -6,10 +6,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-public class ActiveMQConsumer {
+public class ActiveMQListener {
 
     @JmsListener(destination = "queue")
-    public void processMessages(String message) {
-        log.info("Received: {}", message);
+    public void processMessages(ActiveMQMessage message) {
+        log.warn("Received message to {}: {}", message.getTo(), message.getMessage());
     }
 }

@@ -1,10 +1,7 @@
 package com.godel.simplecrud.activemq;
 
 import org.springframework.jms.core.JmsTemplate;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/active")
@@ -16,8 +13,8 @@ public class ActiveMQControllerRest {
         this.jmsTemplate = jmsTemplate;
     }
 
-    @GetMapping(value = "/send/{message}", produces = "text/html")
-    public String sendMessage(@PathVariable String message) {
+    @GetMapping(value = "/send")
+    public String sendMessage(@RequestBody ActiveMQMessage message) {
         jmsTemplate.convertAndSend("queue", message);
         return "done";
     }
