@@ -13,9 +13,9 @@ public class ActiveMQControllerRest {
         this.jmsTemplate = jmsTemplate;
     }
 
-    @GetMapping(value = "/send")
+    @PostMapping(value = "/send")
     public String sendMessage(@RequestBody ActiveMQMessage message) {
         jmsTemplate.convertAndSend("queue", message);
-        return "done";
+        return "Done.";
     }
 }
