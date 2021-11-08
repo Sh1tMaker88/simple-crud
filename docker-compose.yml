@@ -1,7 +1,22 @@
 services:
+  crud-app:
+    build:
+      context: .
+    container_name: simple-crud-app
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    links:
+      - activemq-godel
+    depends_on:
+      - postgres-godel
+      - pgadmin-godel
+      - activemq-godel
+
   postgres-godel:
     container_name: postgres-godel
     image: postgres
+    restart: unless-stopped
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: pass
@@ -11,13 +26,11 @@ services:
       - postgres:/data/postgres-godel
     ports:
       - "5435:5432"
-    networks:
-      - postgres
-    restart: unless-stopped
 
   pgadmin-godel:
     container_name: pgadmin-godel
     image: dpage/pgadmin4
+    restart: unless-stopped
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
@@ -26,13 +39,21 @@ services:
       - pgadmin:/var/lib/pgadmin-godel
     ports:
       - "5050:80"
-    networks:
-      - postgres
-    restart: unless-stopped
 
-networks:
-  postgres:
-    driver: bridge
+  activemq-godel:
+    container_name: activemq-godel
+    image: webcenter/activemq
+    restart: unless-stopped
+    environment:
+      ACTIVEMQ_ADMIN_LOGIN: admin
+      ACTIVEMQ_ADMIN_PASSWORD: admin
+      ACTIVEMQ_LOGGER_LOGLEVEL: warn
+    volumes:
+      - ./activemqData:/data
+      - ./logs/activemq:/var/log/activemq
+    ports:
+      - "8101:8161"
+      - "62626:61616"
 
 volumes:
   postgres:

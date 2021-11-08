@@ -51,7 +51,7 @@ public class EmployeeController {
         log.info("IN: showAllEmployees - Request: [method:{}] URI: {}, params:{}",
                 request.getMethod(), request.getRequestURI(), request.getQueryString());
 
-        List<Employee> employeeList = employeeService.findByFirstNameAndLastName(firstName + "%", lastName + "%");
+        List<Employee> employeeList = employeeService.findByFirstNameAndLastName(firstName, lastName);
 
         log.info("OUT: showAllEmployees - found {} employees", employeeList.size());
         return employeeList;

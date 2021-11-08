@@ -39,7 +39,7 @@ public class EmployeeJPAServiceImpl implements EmployeeService {
 
     @Override
     public List<Employee> findByFirstNameAndLastName(String firstName, String lastName) {
-        return employeeJPADao.findByFirstNameIgnoreCaseLikeAndLastNameIgnoreCaseLike(firstName, lastName);
+        return employeeJPADao.findByFirstNameIgnoreCaseLikeAndLastNameIgnoreCaseLike(firstName + "%", lastName + "%");
     }
 
     @Override
