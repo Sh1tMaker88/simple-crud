@@ -77,6 +77,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-activemq</artifactId>
         </dependency>
+
 <!--        Tests-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -121,6 +122,29 @@
 <!--            <artifactId>junit-vintage-engine</artifactId>-->
 <!--            <scope>test</scope>-->
 <!--        </dependency>-->
+
+        <dependency>
+            <groupId>org.jbehave</groupId>
+            <artifactId>jbehave-core</artifactId>
+            <version>4.8.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jbehave</groupId>
+            <artifactId>jbehave-spring</artifactId>
+            <version>4.8.3</version>
+        </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>4.4.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jbehave</groupId>
+            <artifactId>jbehave-gherkin</artifactId>
+            <version>4.8.3</version>
+        </dependency>
+
 
 
     </dependencies>

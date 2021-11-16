@@ -34,7 +34,6 @@ public class EmployeeJpaServiceStepdefs {
     @When("user search employee by first name {string} and last name {string}")
     public void employeeServiceInvokeSearchByFirstNameAndLastName(String firstName, String lastName) {
         URI path = URI.create(URL + "?firstName=" + firstName + "&lastName=" + lastName);
-
         try {
             ResponseEntity<List<Employee>> responseEntity = restTemplate.exchange(path, HttpMethod.GET, null,
                     new ParameterizedTypeReference<>() {});
