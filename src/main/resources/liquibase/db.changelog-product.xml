@@ -20,6 +20,53 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="3.01(Insert in product)" author="ItMaker">
+        <insert tableName="product">
+            <column name="name" value="Food"/>
+            <column name="price" value="13.25"/>
+        </insert>
+    </changeSet>
 
+    <changeSet id="3.02(Insert in product)" author="ItMaker">
+        <insert tableName="product">
+            <column name="name" value="Drinks"/>
+            <column name="price" value="2.75"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="3.03(Insert in product)" author="ItMaker">
+        <insert tableName="product">
+            <column name="name" value="Uniform"/>
+            <column name="price" value="30.00"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="3.04(Insert in product)" author="ItMaker">
+        <insert tableName="product">
+            <column name="name" value="Tools"/>
+            <column name="price" value="75.60"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="3.05(Insert in product)" author="ItMaker">
+        <insert tableName="product">
+            <column name="name" value="Training courses"/>
+            <column name="price" value="32.40"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="3.06(Insert in product)" author="ItMaker">
+        <insert tableName="product">
+            <column name="name" value="Comfortable workplace"/>
+            <column name="price" value="79.90"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="3.07(Insert in product)" author="ItMaker">
+        <insert tableName="product">
+            <column name="name" value="Brains"/>
+            <column name="price" value="99.99"/>
+        </insert>
+    </changeSet>
 
 </databaseChangeLog>

@@ -1,6 +1,7 @@
 package com.godel.simplecrud.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -26,6 +27,7 @@ public class Order {
     private Long orderId;
 
     @JsonIgnoreProperties("orders")
+    @JsonIdentityReference(alwaysAsId = true)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE}
 //            fetch = FetchType.LAZY
     )
@@ -33,7 +35,9 @@ public class Order {
     private Employee customer;
 
     @JsonIgnoreProperties("orders")
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE})
+    @JsonIdentityReference(alwaysAsId = true)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE},
+            fetch = FetchType.EAGER)
     @JoinTable(name = "ordering_product",
             joinColumns = @JoinColumn(name = "order_id", referencedColumnName = "order_id"),
             inverseJoinColumns = @JoinColumn(name = "product_id", referencedColumnName = "product_id"))

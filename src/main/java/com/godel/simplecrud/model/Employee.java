@@ -1,5 +1,6 @@
 package com.godel.simplecrud.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.godel.simplecrud.model.validation.AgeValidation;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -55,6 +56,7 @@ public class Employee {
     private LocalDate dateOfBirth;
 
     @JsonIgnoreProperties("products")
+    @JsonIdentityReference(alwaysAsId = true)
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "customer")
     private List<Order> orders = new ArrayList<>();
 }

@@ -1,5 +1,6 @@
 package com.godel.simplecrud.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -24,7 +25,9 @@ public class Product {
     private String name;
 
     @JsonIgnoreProperties("products")
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE})
+    @JsonIdentityReference(alwaysAsId = true)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE},
+            fetch = FetchType.EAGER)
     @JoinTable(name = "ordering_product",
             joinColumns = @JoinColumn(name = "product_id", referencedColumnName = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "order_id", referencedColumnName = "order_id"))
