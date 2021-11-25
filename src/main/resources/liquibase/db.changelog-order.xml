@@ -1,0 +1,63 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+
+    <changeSet id="2.0(create ordering table)" author="ItMaker">
+        <createTable tableName="ordering">
+            <column name="order_id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="pk_ordering_id"/>
+            </column>
+
+            <column name="customer_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="order_date" type="DATETIME" defaultValue="NOW()">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="total_price" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="ordering"
+                                 baseColumnNames="customer_id"
+                                 constraintName="FK_ORDERING_ON_CUSTOMER"
+                                 referencedColumnNames="employee_id"
+                                 referencedTableName="employee"/>
+    </changeSet>
+
+    <changeSet id="4.0(create ordering_product table)" author="ItMaker">
+        <createTable tableName="ordering_product">
+            <column name="order_id" type="BIGINT"/>
+            <column name="product_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="4.1(add foreign keys for ordering_product)" author="ItMaker">
+        <addForeignKeyConstraint baseTableName="ordering_product"
+                                 baseColumnNames="order_id"
+                                 constraintName="FK_ORDERING_PRODUCT_ON_ORDERING"
+                                 referencedTableName="ordering"
+                                 referencedColumnNames="order_id"/>
+
+        <addForeignKeyConstraint baseTableName="ordering_product"
+                                 baseColumnNames="product_id"
+                                 constraintName="FK_ORDERING_PRODUCT_ON_PRODUCT"
+                                 referencedTableName="product"
+                                 referencedColumnNames="product_id"/>
+    </changeSet>
+
+    <changeSet id="4.2(Create indexes for ordering_product)" author="ItMaker">
+        <createIndex tableName="ordering_product" indexName="IDX_ORDERING_PRODUCT_ORDERING_ID">
+            <column name="order_id"/>
+        </createIndex>
+
+        <createIndex tableName="ordering_product" indexName="IDX_ORDERING_PRODUCT_PRODUCT_ID">
+            <column name="product_id"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

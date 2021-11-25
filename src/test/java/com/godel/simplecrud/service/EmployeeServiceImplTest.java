@@ -75,7 +75,7 @@ class EmployeeServiceImplTest {
     void createEmployeeTest() {
         //given
         Employee employee = new Employee(1L, "fName", "lName", 5L,
-                "jobTitle", Gender.MALE, LocalDate.of(1999, 5, 25));
+                "jobTitle", Gender.MALE, LocalDate.of(1999, 5, 25), null);
         when(employeeDao.create(any())).thenReturn(employee.getEmployeeId());
         when(employeeDao.findById(anyLong())).thenReturn(Optional.of(employee));
 

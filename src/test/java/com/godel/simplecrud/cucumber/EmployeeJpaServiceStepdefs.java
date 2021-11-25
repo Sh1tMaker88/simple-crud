@@ -1,5 +1,6 @@
 package com.godel.simplecrud.cucumber;
 
+import com.godel.simplecrud.exceptions.ErrorMessage;
 import com.godel.simplecrud.model.Employee;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -31,15 +32,22 @@ public class EmployeeJpaServiceStepdefs {
     public void databaseWithEmployees() {
     }
 
+    //todo ex
     @When("user search employee by first name {string} and last name {string}")
     public void employeeServiceInvokeSearchByFirstNameAndLastName(String firstName, String lastName) {
         URI path = URI.create(URL + "?firstName=" + firstName + "&lastName=" + lastName);
         try {
-            ResponseEntity<List<Employee>> responseEntity = restTemplate.exchange(path, HttpMethod.GET, null,
+            ResponseEntity<Object> responseEntity = restTemplate.exchange(path, HttpMethod.GET, null,
                     new ParameterizedTypeReference<>() {});
-            employeeList = responseEntity.getBody();
-            statusCode = responseEntity.getStatusCodeValue();
+            if (responseEntity.getStatusCodeValue() == 200) {
+                employeeList = (List<Employee>) responseEntity.getBody();
+                statusCode = responseEntity.getStatusCodeValue();
+            } else {
+                ErrorMessage errorMes = (ErrorMessage) responseEntity.getBody();
+                throw new RestClientException("asdf");
+            }
         } catch (RestClientException exception) {
+            System.out.println(exception.getMessage());
             exceptionMessage = exception.getMessage();
         }
     }

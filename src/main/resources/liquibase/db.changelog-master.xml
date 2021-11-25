@@ -2,6 +2,8 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <include file="liquibase/db.changelog-product.xml"/>
+    <include file="liquibase/db.changelog-order.xml"/>
 
     <changeSet id="1.0(Create gender_enum type)" author="ItMaker">
         <sql>CREATE TYPE gender_enum as ENUM('MALE', 'FEMALE')</sql>

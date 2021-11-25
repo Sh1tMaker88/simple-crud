@@ -47,10 +47,9 @@ services:
     environment:
       ACTIVEMQ_ADMIN_LOGIN: admin
       ACTIVEMQ_ADMIN_PASSWORD: admin
-      ACTIVEMQ_LOGGER_LOGLEVEL: warn
     volumes:
-      - ./activemqData:/data
-      - ./logs/activemq:/var/log/activemq
+      - ./activemqData:/data/activemq
+      - ./activemqData/logs:/var/log/activemq
     ports:
       - "8101:8161"
       - "62626:61616"

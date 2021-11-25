@@ -1,5 +1,6 @@
 package com.godel.simplecrud.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.godel.simplecrud.model.validation.AgeValidation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
@@ -7,6 +8,8 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,7 +23,6 @@ public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "employee_id")
-    @Positive(message = "Employee ID cannot be less or equal 0")
     private Long employeeId;
 
     @Column(name = "first_name")
@@ -52,4 +54,7 @@ public class Employee {
     @AgeValidation(message = "Age must be more than 18 years old")
     private LocalDate dateOfBirth;
 
+    @JsonIgnoreProperties("products")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "customer")
+    private List<Order> orders = new ArrayList<>();
 }
