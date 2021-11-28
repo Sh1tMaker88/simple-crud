@@ -11,9 +11,9 @@ import java.util.Optional;
 
 @Service
 @Slf4j
-public class ProductJPAServiceImpl implements ProductService {
+public class ProductJPAServiceImpl implements ProductJPAService {
 
-    private ProductJPADao productJPADao;
+    private final ProductJPADao productJPADao;
 
     public ProductJPAServiceImpl(ProductJPADao productJPADao) {
         this.productJPADao = productJPADao;
@@ -26,13 +26,9 @@ public class ProductJPAServiceImpl implements ProductService {
 
     @Override
     public Product findProductById(Long id) {
-        Optional<Product> productOptional = productJPADao.findById(id);
 
-        if (productOptional.isEmpty()) {
-            throw new ProductServiceNotFoundException("No such product with ID=" + id);
-        }
-
-        return productOptional.get();
+        return productJPADao.findById(id)
+                .orElseThrow(() -> new ProductServiceNotFoundException("No such product with ID=" + id));
     }
 
     @Override

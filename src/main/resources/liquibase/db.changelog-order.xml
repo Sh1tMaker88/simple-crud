@@ -60,4 +60,27 @@
         </createIndex>
     </changeSet>
 
+    <changeSet id="2.01(Insert in ordering table)" author="ItMaker">
+        <insert tableName="ordering">
+            <column name="customer_id" value="2"/>
+            <column name="order_date" valueComputed="NOW()"/>
+            <column name="total_price" value="16.00"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="4.01(Insert in ordering_product table)" author="ItMaker">
+        <insert tableName="ordering_product">
+            <column name="order_id" value="1"/>
+            <column name="product_id" value="1"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="4.02(Insert in ordering_product table)" author="ItMaker">
+        <insert tableName="ordering_product">
+            <column name="order_id" value="1"/>
+            <column name="product_id" value="2"/>
+        </insert>
+    </changeSet>
+
+
 </databaseChangeLog>

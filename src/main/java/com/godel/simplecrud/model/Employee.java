@@ -11,13 +11,13 @@ import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Table(name = "employee")
 public class Employee {
 
@@ -57,6 +57,20 @@ public class Employee {
 
     @JsonIgnoreProperties("products")
     @JsonIdentityReference(alwaysAsId = true)
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "customer")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "customer", orphanRemoval = true)
     private List<Order> orders = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "employeeId=" + employeeId +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", departmentId=" + departmentId +
+                ", jobTitle='" + jobTitle + '\'' +
+                ", gender=" + gender +
+                ", dateOfBirth=" + dateOfBirth +
+                ", orders=" + orders.stream().map(Order::getOrderId).collect(Collectors.toList()) +
+                '}';
+    }
 }

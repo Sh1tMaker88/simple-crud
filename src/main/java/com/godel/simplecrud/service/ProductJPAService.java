@@ -5,7 +5,7 @@ import com.godel.simplecrud.model.Product;
 
 import java.util.List;
 
-public interface ProductService {
+public interface ProductJPAService {
 
     List<Product> findAllProducts();
 

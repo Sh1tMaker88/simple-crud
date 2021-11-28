@@ -2,6 +2,7 @@ package com.godel.simplecrud.controller;
 
 import com.godel.simplecrud.model.Product;
 import com.godel.simplecrud.service.ProductJPAServiceImpl;
+import com.godel.simplecrud.service.ProductJPAService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,7 +14,7 @@ import java.util.List;
 @Slf4j
 public class ProductController {
 
-    private final ProductJPAServiceImpl productJPAService;
+    private final ProductJPAService productJPAService;
 
     public ProductController(ProductJPAServiceImpl productJPAService) {
         this.productJPAService = productJPAService;
