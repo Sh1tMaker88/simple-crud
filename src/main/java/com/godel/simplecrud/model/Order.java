@@ -41,7 +41,7 @@ public class Order {
 //    @JsonIdentityReference(alwaysAsId = true)
 //    @JsonIdentityInfo(property = "productId", generator = ObjectIdGenerators.PropertyGenerator.class)
     @ManyToMany(
-//            cascade = {CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE},
+            cascade = {CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE},
             fetch = FetchType.EAGER)
     @JoinTable(name = "ordering_product",
             joinColumns = @JoinColumn(name = "order_id", referencedColumnName = "order_id"),

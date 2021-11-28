@@ -14,11 +14,7 @@ public interface OrderJPAService {
 
     Order findOrderById(Long id);
 
-    Order createOrder(Order order);
-
     Order createOrderForCustomer(Long customerId, Order order);
-
-    Order updateOrCreateOrder(Order order);
 
     Order updateOrderForCustomer(Long customerId, Order order);
 }

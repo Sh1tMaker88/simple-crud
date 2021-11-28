@@ -43,7 +43,7 @@ public class OrderController {
 
     @GetMapping("/employees/{customerId}/orders/{orderId}")
     public Order showOrderById(@PathVariable Long customerId,
-                               @PathVariable Long orderId,HttpServletRequest request) {
+                               @PathVariable Long orderId, HttpServletRequest request) {
         log.info("IN: showOrderById - Request: [method:{}] URI: {}",
                 request.getMethod(), request.getRequestURI());
 
@@ -63,5 +63,20 @@ public class OrderController {
 
         log.info("OUT: createOrderForCustomer - created {}", createdOrder);
         return createdOrder;
+    }
+
+    @PutMapping("/employees/{customerId}/orders/{orderId}")
+    public Order updateOrderForCustomer(@PathVariable Long customerId,
+                                        @PathVariable Long orderId,
+                                        @Valid @RequestBody Order order,
+                                        HttpServletRequest request) {
+        log.info("IN: updateOrderForCustomer - Request: [method:{}] URI: {}",
+                request.getMethod(), request.getRequestURI());
+
+        order.setOrderId(orderId);
+        Order updatedOrder = orderJPAService.updateOrderForCustomer(customerId, order);
+
+        log.info("OUT: updateOrderForCustomer - updated {}", order);
+        return updatedOrder;
     }
 }

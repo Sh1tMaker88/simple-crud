@@ -52,12 +52,6 @@ public class OrderJPAServiceImpl implements OrderJPAService {
     }
 
     @Override
-    public Order createOrder(Order order) {
-        order.setTotalPrice(getTotalPriceForOrder(order));
-        return orderJPADao.save(order);
-    }
-
-    @Override
     public Order createOrderForCustomer(Long customerId, Order order) {
         Employee customer = employeeJPADao.findById(customerId)
                 .orElseThrow(() -> new OrderServiceNotFoundException("No such customer with ID=" + customerId));
@@ -65,11 +59,6 @@ public class OrderJPAServiceImpl implements OrderJPAService {
         order.setCustomer(customer);
         order.setTotalPrice(getTotalPriceForOrder(order));
 
-        return orderJPADao.save(order);
-    }
-
-    @Override
-    public Order updateOrCreateOrder(Order order) {
         return orderJPADao.save(order);
     }
 
