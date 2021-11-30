@@ -1,7 +1,11 @@
 package com.godel.simplecrud.service;
 
+import com.godel.simplecrud.dao.jpa.EmployeeJPADao;
+import com.godel.simplecrud.dao.jpa.OrderJPADao;
 import com.godel.simplecrud.dao.jpa.ProductJPADao;
 import com.godel.simplecrud.exceptions.ProductServiceNotFoundException;
+import com.godel.simplecrud.model.Employee;
+import com.godel.simplecrud.model.Order;
 import com.godel.simplecrud.model.Product;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,9 +18,13 @@ import java.util.Optional;
 public class ProductJPAServiceImpl implements ProductJPAService {
 
     private final ProductJPADao productJPADao;
+    private final OrderJPADao orderJPADao;
+    private final EmployeeJPADao employeeJPADao;
 
-    public ProductJPAServiceImpl(ProductJPADao productJPADao) {
+    public ProductJPAServiceImpl(ProductJPADao productJPADao, OrderJPADao orderJPADao, EmployeeJPADao employeeJPADao) {
         this.productJPADao = productJPADao;
+        this.orderJPADao = orderJPADao;
+        this.employeeJPADao = employeeJPADao;
     }
 
     @Override
@@ -25,10 +33,26 @@ public class ProductJPAServiceImpl implements ProductJPAService {
     }
 
     @Override
-    public Product findProductById(Long id) {
+    public List<Product> findAllProductsByCustomerIdAndOrderId(Long customerId, Long orderId) {
+        Employee employee = employeeJPADao.findById(customerId)
+                .orElseThrow(() -> new ProductServiceNotFoundException("No such customer with ID=" + customerId));
+        Order order = orderJPADao.findOrderByCustomerAndOrderId(employee, orderId)
+                .orElseThrow(() -> new ProductServiceNotFoundException("No such order with ID=" + orderId +
+                        " for customer with ID=" + customerId));
+        log.info("findAllProductsByCustomerIdAndOrderId - got correct request for {}", order);
 
-        return productJPADao.findById(id)
-                .orElseThrow(() -> new ProductServiceNotFoundException("No such product with ID=" + id));
+        return order.getProducts();
+    }
+
+    @Override
+    public Product findSpecificProductByCustomerIdAndOrderId(Long customerId, Long orderId, Long productId) {
+        List<Product> productList = findAllProductsByCustomerIdAndOrderId(customerId, orderId);
+
+        return productList.stream()
+                .filter(el -> el.getProductId().equals(productId))
+                .findFirst()
+                    .orElseThrow(() -> new ProductServiceNotFoundException("No such product with ID=" + productId +
+                        " for order with ID=" + orderId));
     }
 
     @Override
@@ -37,7 +61,14 @@ public class ProductJPAServiceImpl implements ProductJPAService {
     }
 
     @Override
-    public Product updateOrCreateProduct(Product product) {
+    public Product updateProduct(Product product) {
         return productJPADao.save(product);
     }
+
+    @Override
+    public Product findProductById(Long productId) {
+        return productJPADao.findById(productId)
+                .orElseThrow(() -> new ProductServiceNotFoundException("No such product with ID=" + productId));
+    }
+
 }

@@ -100,7 +100,8 @@ public class EmployeeController {
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Create or update employee", description = "Let create new employee with given parameters or update if he already exists")
+    @Operation(summary = "Create or update employee",
+            description = "Let create new employee with given parameters or update if he already exists")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Employee saved", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Employee.class))
@@ -116,7 +117,7 @@ public class EmployeeController {
         employee.setEmployeeId(id);
         Employee updatedEmployee = employeeService.updateOrCreateEmployee(employee);
 
-        log.info("OUT: updateEmployee - found {}", updatedEmployee);
+        log.info("OUT: updateEmployee - updated {}", updatedEmployee);
         return updatedEmployee;
     }
 

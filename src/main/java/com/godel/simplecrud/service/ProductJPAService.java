@@ -9,10 +9,13 @@ public interface ProductJPAService {
 
     List<Product> findAllProducts();
 
-    Product findProductById(Long id);
+    List<Product> findAllProductsByCustomerIdAndOrderId(Long customerId, Long orderId);
+
+    Product findSpecificProductByCustomerIdAndOrderId(Long customerId, Long orderId, Long productId);
 
     Product createProduct(Product product);
 
-    Product updateOrCreateProduct(Product product);
+    Product updateProduct(Product product);
 
+    Product findProductById(Long productId);
 }

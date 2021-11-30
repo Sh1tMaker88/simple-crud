@@ -22,8 +22,6 @@ import java.util.stream.Collectors;
 @Setter
 public class Product {
 
-    //todo validation
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_id")

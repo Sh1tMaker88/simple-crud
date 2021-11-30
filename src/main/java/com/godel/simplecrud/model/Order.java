@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 public class Order {
-    //todo validation
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

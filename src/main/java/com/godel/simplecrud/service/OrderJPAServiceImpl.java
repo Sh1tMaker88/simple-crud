@@ -3,6 +3,7 @@ package com.godel.simplecrud.service;
 import com.godel.simplecrud.dao.jpa.EmployeeJPADao;
 import com.godel.simplecrud.dao.jpa.OrderJPADao;
 import com.godel.simplecrud.exceptions.OrderServiceNotFoundException;
+import com.godel.simplecrud.exceptions.ProductServiceNotFoundException;
 import com.godel.simplecrud.model.Employee;
 import com.godel.simplecrud.model.Order;
 import com.godel.simplecrud.model.Product;
@@ -42,7 +43,9 @@ public class OrderJPAServiceImpl implements OrderJPAService {
         Employee customer = employeeJPADao.findById(customerId)
                 .orElseThrow(() -> new OrderServiceNotFoundException("No such customer with ID=" + customerId));
 
-        return orderJPADao.findOrderByCustomerAndOrderId(customer, orderId);
+        return orderJPADao.findOrderByCustomerAndOrderId(customer, orderId)
+                .orElseThrow(() -> new ProductServiceNotFoundException("No such order with ID=" + orderId +
+                " for customer with ID=" + customerId));
     }
 
     @Override
@@ -76,7 +79,7 @@ public class OrderJPAServiceImpl implements OrderJPAService {
         double totalPrice = order.getProducts().stream().
                 mapToDouble(Product::getPrice)
                 .sum();
-        log.info("IN: getTotalPriceForOrder - total price is: " + totalPrice);
+        log.info("getTotalPriceForOrder - set total price:{} for order ID={}", totalPrice, order.getOrderId());
 
         return totalPrice;
     }
