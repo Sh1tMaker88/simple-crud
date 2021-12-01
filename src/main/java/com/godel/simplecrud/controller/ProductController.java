@@ -1,6 +1,7 @@
 package com.godel.simplecrud.controller;
 
 import com.godel.simplecrud.exceptions.ErrorMessage;
+import com.godel.simplecrud.model.Order;
 import com.godel.simplecrud.model.Product;
 import com.godel.simplecrud.service.ProductJPAServiceImpl;
 import com.godel.simplecrud.service.ProductJPAService;
@@ -100,6 +101,9 @@ public class ProductController {
             }),
             @ApiResponse(responseCode = "400", description = "Incorrect data input for product", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class))
+            }),
+            @ApiResponse(responseCode = "404", description = "No such product with given ID", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class))
             })
     })
     public Product updateProduct(@PathVariable @Min(value = 1, message = "ID cannot be less or equal 0") Long productId,
@@ -115,9 +119,23 @@ public class ProductController {
     }
 
     @GetMapping("/employees/{customerId}/orders/{orderId}/products")
-    public List<Product> showProductsForSpecificOrder(
+    @Operation(summary = "Show all products for specific order ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully found product", content = {
+                    @Content(mediaType = "application/json", array =
+                    @ArraySchema(schema = @Schema(implementation = Product.class)))
+            }),
+            @ApiResponse(responseCode = "400", description = "Incorrect data input", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class))
+            }),
+            @ApiResponse(responseCode = "404", description = "No such customer/order defined", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class))
+            })
+    })
+    public List<Product> showAllProductsForSpecificOrder(
             @PathVariable @Min(value = 1, message = "ID cannot be less or equal 0") Long customerId,
-            @PathVariable Long orderId, HttpServletRequest request) {
+            @PathVariable @Min(value = 1, message = "ID cannot be less or equal 0") Long orderId,
+            HttpServletRequest request) {
         log.info("IN: showProductsForSpecificOrder - Request: [method:{}] URI: {}",
                 request.getMethod(), request.getRequestURI());
 
@@ -128,9 +146,24 @@ public class ProductController {
     }
 
     @GetMapping("/employees/{customerId}/orders/{orderId}/products/{productId}")
-    public Product showSpecificProductForSpecificOrder(@PathVariable Long customerId,
-                                                       @PathVariable Long orderId,
-                                                       @PathVariable Long productId, HttpServletRequest request) {
+    @Operation(summary = "Show specific product in order")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully found product", content = {
+                    @Content(mediaType = "application/json", array =
+                    @ArraySchema(schema = @Schema(implementation = Product.class)))
+            }),
+            @ApiResponse(responseCode = "400", description = "Incorrect data input", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class))
+            }),
+            @ApiResponse(responseCode = "404", description = "No such customer/order/product defined", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class))
+            })
+    })
+    public Product showSpecificProductForSpecificOrder(
+            @PathVariable @Min(value = 1, message = "ID cannot be less or equal 0") Long customerId,
+            @PathVariable @Min(value = 1, message = "ID cannot be less or equal 0") Long orderId,
+            @PathVariable @Min(value = 1, message = "ID cannot be less or equal 0") Long productId,
+            HttpServletRequest request) {
         log.info("IN: showSpecificProductForSpecificOrder - Request: [method:{}] URI: {}",
                 request.getMethod(), request.getRequestURI());
 

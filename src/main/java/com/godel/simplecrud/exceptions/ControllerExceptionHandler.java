@@ -20,7 +20,7 @@ public class ControllerExceptionHandler {
     public ErrorMessage validateErrorHandler(ConstraintViolationException exception, HttpServletRequest request) {
         int status = HttpStatus.BAD_REQUEST.value();
         String description = request.getQueryString() == null ? request.getRequestURI()
-                : request.getRequestURI() + ", params: " +  request.getQueryString();
+                : request.getRequestURI() + ", params: " + request.getQueryString();
 
         StringBuilder messages = new StringBuilder();
         exception.getConstraintViolations()
@@ -28,7 +28,7 @@ public class ControllerExceptionHandler {
         String stringMessage = messages.replace(messages.length() - 1, messages.length(), "").toString();
 
         log.error("HTTP status: {}, path: {}", status, description, exception);
-        
+
         return new ErrorMessage(status, LocalDateTime.now(), stringMessage, description);
     }
 
@@ -37,7 +37,7 @@ public class ControllerExceptionHandler {
     public ErrorMessage validateRequestBody(MethodArgumentNotValidException exception, HttpServletRequest request) {
         int status = HttpStatus.BAD_REQUEST.value();
         String description = request.getQueryString() == null ? request.getRequestURI()
-                : request.getRequestURI() + ", params: " +  request.getQueryString();
+                : request.getRequestURI() + ", params: " + request.getQueryString();
 
         StringBuilder messages = new StringBuilder();
         exception.getFieldErrors()
@@ -49,9 +49,10 @@ public class ControllerExceptionHandler {
         return new ErrorMessage(status, LocalDateTime.now(), stringMessage, description);
     }
 
-    @ExceptionHandler(EmployeeServiceNotFoundException.class)
+    @ExceptionHandler({EmployeeServiceNotFoundException.class, OrderServiceNotFoundException.class,
+            ProductServiceNotFoundException.class})
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    public ErrorMessage notFoundException(EmployeeServiceNotFoundException exception, WebRequest request) {
+    public ErrorMessage notFoundException(ServiceNotFoundException exception, WebRequest request) {
         int status = HttpStatus.NOT_FOUND.value();
         String description = request.getDescription(false);
 

@@ -2,7 +2,9 @@ package com.godel.simplecrud.controller;
 
 import com.godel.simplecrud.model.Order;
 import com.godel.simplecrud.service.OrderJPAService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,6 +13,8 @@ import java.util.List;
 
 @RestController
 @Slf4j
+@Tag(name = "Order controller")
+@Validated
 public class OrderController {
 
     private final OrderJPAService orderJPAService;

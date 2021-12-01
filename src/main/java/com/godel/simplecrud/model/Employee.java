@@ -3,6 +3,7 @@ package com.godel.simplecrud.model;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.godel.simplecrud.model.validation.AgeValidation;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
@@ -55,6 +56,7 @@ public class Employee {
     @AgeValidation(message = "Age must be more than 18 years old")
     private LocalDate dateOfBirth;
 
+    @Hidden
     @JsonIgnoreProperties("products")
     @JsonIdentityReference(alwaysAsId = true)
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "customer", orphanRemoval = true)
