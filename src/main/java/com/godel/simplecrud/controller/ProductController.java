@@ -73,6 +73,7 @@ public class ProductController {
         return product;
     }
 
+
     @PostMapping("/products")
     @Operation(summary = "Create new product")
     @ApiResponses(value = {
@@ -80,7 +81,7 @@ public class ProductController {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class))
             }),
             @ApiResponse(responseCode = "400", description = "Incorrect data input for product", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class))
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))
             })
     })
     public Product createProduct(@RequestBody @Valid Product product, HttpServletRequest request) {
@@ -93,6 +94,7 @@ public class ProductController {
         return createdProduct;
     }
 
+
     @PutMapping("/products/{productId}")
     @Operation(summary = "Update product or create a new one")
     @ApiResponses(value = {
@@ -100,10 +102,10 @@ public class ProductController {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class))
             }),
             @ApiResponse(responseCode = "400", description = "Incorrect data input for product", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class))
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))
             }),
             @ApiResponse(responseCode = "404", description = "No such product with given ID", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class))
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))
             })
     })
     public Product updateProduct(@PathVariable @Min(value = 1, message = "ID cannot be less or equal 0") Long productId,
@@ -118,6 +120,7 @@ public class ProductController {
         return product;
     }
 
+
     @GetMapping("/employees/{customerId}/orders/{orderId}/products")
     @Operation(summary = "Show all products for specific order ID")
     @ApiResponses(value = {
@@ -129,7 +132,7 @@ public class ProductController {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class))
             }),
             @ApiResponse(responseCode = "404", description = "No such customer/order defined", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class))
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))
             })
     })
     public List<Product> showAllProductsForSpecificOrder(
@@ -145,6 +148,7 @@ public class ProductController {
         return productList;
     }
 
+
     @GetMapping("/employees/{customerId}/orders/{orderId}/products/{productId}")
     @Operation(summary = "Show specific product in order")
     @ApiResponses(value = {
@@ -156,7 +160,7 @@ public class ProductController {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class))
             }),
             @ApiResponse(responseCode = "404", description = "No such customer/order/product defined", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class))
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))
             })
     })
     public Product showSpecificProductForSpecificOrder(
