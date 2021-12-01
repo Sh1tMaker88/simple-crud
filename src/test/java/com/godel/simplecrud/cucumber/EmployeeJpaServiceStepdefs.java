@@ -6,6 +6,7 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
 
+import java.lang.reflect.Field;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +34,6 @@ public class EmployeeJpaServiceStepdefs {
     public void databaseWithEmployees() {
     }
 
-    //todo ex
     @When("user search employee by first name {string} and last name {string}")
     public void employeeServiceInvokeSearchByFirstNameAndLastName(String firstName, String lastName) {
         URI path = URI.create(URL + "?firstName=" + firstName + "&lastName=" + lastName);
@@ -43,11 +44,11 @@ public class EmployeeJpaServiceStepdefs {
                 employeeList = (List<Employee>) responseEntity.getBody();
                 statusCode = responseEntity.getStatusCodeValue();
             } else {
-                ErrorMessage errorMes = (ErrorMessage) responseEntity.getBody();
-                throw new RestClientException("asdf");
+                String entity = responseEntity.getBody().toString();
+                String message = StringUtils.substringBetween(entity, "message=", ",");
+                throw new RestClientException(message);
             }
         } catch (RestClientException exception) {
-            System.out.println(exception.getMessage());
             exceptionMessage = exception.getMessage();
         }
     }
@@ -64,6 +65,6 @@ public class EmployeeJpaServiceStepdefs {
 
     @Then("program throws Exception")
     public void programThrowsException() {
-        assertNotNull(exceptionMessage);
+        assertEquals("First name can contain letters only and '.'", exceptionMessage);
     }
 }
